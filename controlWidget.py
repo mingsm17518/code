@@ -143,16 +143,18 @@ class ControlWidget(QWidget):
 
         self.btnList = [self.btn1, self.btn2, self.btn3, self.btn4, self.btn5, self.btn6,self.btn7,self.btn8,self.btn9]
 
-        self.btnLayout.addWidget(self.btn1)
-        self.btnLayout.addWidget(self.btn2)
-        self.btnLayout.addWidget(self.btn3)
-        self.btnLayout.addWidget(self.btn4)
-        self.btnLayout.addWidget(self.btn5)
-        self.btnLayout.addWidget(self.btn7)
-        self.btnLayout.addWidget(self.btn8)
-        self.btnLayout.addWidget(self.btn9)
-        self.btnLayout.setSpacing(6)
+        for btn in self.btnList:
+            self.btnLayout.addWidget(btn)
+        # self.btnLayout.addWidget(self.btn1)
+        # self.btnLayout.addWidget(self.btn2)
+        # self.btnLayout.addWidget(self.btn3)
+        # self.btnLayout.addWidget(self.btn4)
+        # self.btnLayout.addWidget(self.btn5)
         # self.btnLayout.addWidget(self.btn6)
+        # self.btnLayout.addWidget(self.btn7)
+        # self.btnLayout.addWidget(self.btn8)
+        # self.btnLayout.addWidget(self.btn9)
+        self.btnLayout.setSpacing(6)
 
         # self.btn7.clicked.connect(self.showbtn)
         # self.btn8.clicked.connect(self.showbtn2)
@@ -348,21 +350,29 @@ class ControlWidget(QWidget):
         self.gb3BtnLast = QPushButton('上一页')
         self.gb3BtnNext = QPushButton('下一页')
 
-        self.gb6.layout().addWidget(self.gb3BtnLoad)
-        self.gb6.layout().addWidget(self.gb3BtnShow)
-        self.gb6.layout().addWidget(self.gb3BtnPlay)
-        self.gb6.layout().addWidget(self.gb3BtnPause)
-        self.gb6.layout().addWidget(self.gb3BtnLast)
-        self.gb6.layout().addWidget(self.gb3BtnNext)
+        # self.gb6.layout().addWidget(self.gb3BtnLoad)
+        # self.gb6.layout().addWidget(self.gb3BtnShow)
+        # self.gb6.layout().addWidget(self.gb3BtnPlay)
+        # self.gb6.layout().addWidget(self.gb3BtnPause)
+        # self.gb6.layout().addWidget(self.gb3BtnLast)
+        # self.gb6.layout().addWidget(self.gb3BtnNext)
+        buttons_list3 = [self.gb3BtnLoad, self.gb3BtnShow, self.gb3BtnPlay, self.gb3BtnPause,
+                        self.gb3BtnLast,self.gb3BtnNext]
+
+        for button in buttons_list3:
+            self.gb6.layout().addWidget(button)
 
         # 添加组件
-        self.settingWidget.layout().addWidget(self.gb1)
-        self.settingWidget.layout().addWidget(self.gb2)
-        self.settingWidget.layout().addWidget(self.gb3)
-        self.settingWidget.layout().addWidget(self.gb4)
-        self.settingWidget.layout().addWidget(self.gb5)
-        self.settingWidget.layout().addWidget(self.gb6)
-        self.settingWidget.layout().addWidget(self.gb9)
+        widget_list = [self.gb1, self.gb2, self.gb3, self.gb4, self.gb5, self.gb6, self.gb9]
+        for widget in widget_list:
+            self.settingWidget.layout().addWidget(widget)
+        # self.settingWidget.layout().addWidget(self.gb1)
+        # self.settingWidget.layout().addWidget(self.gb2)
+        # self.settingWidget.layout().addWidget(self.gb3)
+        # self.settingWidget.layout().addWidget(self.gb4)
+        # self.settingWidget.layout().addWidget(self.gb5)
+        # self.settingWidget.layout().addWidget(self.gb6)
+        # self.settingWidget.layout().addWidget(self.gb9)
 
         self.fileWidget = FileTreeWidget(parent=self.settingWidget)
         # self.tvodFileWidget = FileTreeWidget(parent=self.tvod, rootPath=None)
