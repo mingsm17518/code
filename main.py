@@ -1,6 +1,5 @@
 # coding:utf-8
 import sys
-
 import numpy as np
 # from astropy.io import fits
 from PySide6.QtGui import QPalette, QColor, Qt, QGuiApplication
