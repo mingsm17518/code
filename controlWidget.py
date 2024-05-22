@@ -91,8 +91,8 @@ class ControlWidget(QWidget):
         self.hdu = None
         self.hduList = None
         self.hasHistogram = True
-        self.histogramAct = self.parent.menuBar().fitsMenu.actions()[0]
-        self.histogramAct.triggered.connect(self.setHistogram)
+        # self.histogramAct = self.parent.menuBar().fitsMenu.actions()[0]
+        # self.histogramAct.triggered.connect(self.setHistogram)
         self.resize(350, 600)
 
         # 主体采用水平布局
@@ -735,8 +735,7 @@ class ControlWidget(QWidget):
         menu.exec_(btn_pos + QPoint(self.menu_button.width(), 0))
 
     def changeStyle(self):
-        # 修改文本样式和背景样式
-        self.label.setStyleSheet("QLabel { color: red; font-size: 16px; background-color: lightblue; }")
+        pass
 
     def panelFunction(self):
         pass

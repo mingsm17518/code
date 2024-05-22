@@ -3,7 +3,7 @@ import sys
 import numpy as np
 # from astropy.io import fits
 from PySide6.QtGui import QPalette, QColor, Qt, QGuiApplication
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox,QVBoxLayout,QPushButton
 # import qdarktheme
 from astropy.io import fits
 
@@ -22,14 +22,27 @@ class MyWindow(QMainWindow):
 
     def __init__(self, filename=None):
         super().__init__()
+
         self.setWindowTitle('时域天文观测处理新技术应用系统')
-        self.resize(1024, 768)
+        self.resize(1024, 760)
 
         self.theme = 'light'
+        self.create_titlebar_buttons()
+        # 移除窗口边框
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        # 设置标题栏可拖动
+        self.draggable = True
+        self.drag_position = None
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.minimize_button)
+        layout.addWidget(self.maximize_button)
+        layout.addWidget(self.close_button)
+
 
         # 菜单
-        self._menuBar = MenuBar(master=self)
-        self.setMenuBar(self._menuBar)
+        # self._menuBar = MenuBar(master=self)
+        # self.setMenuBar(self._menuBar)
 
         # self._toolBar = ToolBar(master=self)
         # self.addToolBar(self._toolBar)
@@ -46,11 +59,52 @@ class MyWindow(QMainWindow):
         # 面板
         self.mainWidget = ControlWidget(self)
         # self.setWidget = setWidget()
-        self.setCentralWidget(self.mainWidget)
+        layout.addWidget(self.mainWidget)
+        # self.setCentralWidget(self.mainWidget)
 
         self.header = None
         self.show()
         self.init()
+        # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+    def create_titlebar_buttons(self):
+        self.minimize_button = QPushButton("-", self)
+        self.minimize_button.setGeometry(880, 10, 30, 30)
+        self.minimize_button.clicked.connect(self.minimize_window)
+
+        self.maximize_button = QPushButton("+", self)
+        self.maximize_button.setGeometry(930, 10, 30, 30)
+        self.maximize_button.clicked.connect(self.maximize_window)
+
+        self.close_button = QPushButton("×", self)
+        self.close_button.setGeometry(980, 10, 30, 30)
+        self.close_button.clicked.connect(self.close_window)
+
+    def mousePressEvent(self, event):
+        if event.buttons() == Qt.MouseButton.LeftButton and self.draggable:
+            self.drag_position = event.globalPosition().toPoint()
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.MouseButton.LeftButton and self.draggable:
+            self.move(self.pos() + event.globalPosition().toPoint() - self.drag_position)
+            self.drag_position = event.globalPosition().toPoint()
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        self.drag_position = None
+
+    def minimize_window(self):
+        self.setWindowState(Qt.WindowState.WindowMinimized)
+
+    def maximize_window(self):
+        if self.windowState() == Qt.WindowState.WindowMaximized:
+            self.setWindowState(Qt.WindowState.WindowNoState)
+        else:
+            self.setWindowState(Qt.WindowState.WindowMaximized)
+
+    def close_window(self):
+        self.close()
 
     def close_window(self):
         # 执行需要在关闭按钮点击时执行的操作
