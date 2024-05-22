@@ -2,8 +2,9 @@
 import sys
 import numpy as np
 # from astropy.io import fits
-from PySide6.QtGui import QPalette, QColor, Qt, QGuiApplication
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox,QVBoxLayout,QPushButton
+from PySide6.QtGui import QPalette, QColor, Qt, QGuiApplication,QIcon
+from PySide6.QtWidgets import (QApplication, QMainWindow, QFileDialog, QMessageBox,QVBoxLayout,
+                               QPushButton,QLabel,QWidget,QHBoxLayout)
 # import qdarktheme
 from astropy.io import fits
 
@@ -23,11 +24,25 @@ class MyWindow(QMainWindow):
     def __init__(self, filename=None):
         super().__init__()
 
-        self.setWindowTitle('时域天文观测处理新技术应用系统')
+        # self.setWindowTitle('时域天文观测处理新技术应用系统')
         self.resize(1024, 760)
-
         self.theme = 'light'
         self.create_titlebar_buttons()
+
+        # 创建标题栏部件
+        # title_bar_widget = QWidget()
+        # title_layout = QHBoxLayout()
+        # 在标题栏上添加标题文本
+
+        # title_layout.addWidget(title_text)
+        #
+        #
+        #
+        # 将标题栏添加到窗口中
+        # main_layout = QVBoxLayout()
+        # main_layout.addWidget(title_bar_widget)
+        # self.setLayout(main_layout)
+
         # 移除窗口边框
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         # 设置标题栏可拖动
@@ -35,10 +50,23 @@ class MyWindow(QMainWindow):
         self.drag_position = None
 
         layout = QVBoxLayout()
-        layout.addWidget(self.minimize_button)
-        layout.addWidget(self.maximize_button)
-        layout.addWidget(self.close_button)
+        # layout.setSpacing(0)
+        # self.btnLayout.setSpacing(0)
+        # self.btnLayout.setContentsMargins(0, 0, 0, 0)
+        # self.setLayout(layout)
+        title_text = QLabel('时域天文观测处理新技术应用系统')
+        layout.addWidget(title_text)
 
+        # 添加最大化和关闭按钮
+        self.btnLayout = QHBoxLayout()
+        self.btnLayout.addStretch(1)  # 添加弹性空间
+        self.btnLayout.addWidget(self.minimize_button)
+        self.btnLayout.addWidget(self.maximize_button)
+        self.btnLayout.addWidget(self.close_button)
+
+        # title_layout.addLayout(self.btnLayout)
+        # title_bar_widget.setLayout(title_layout)
+        layout.addLayout(self.btnLayout)
 
         # 菜单
         # self._menuBar = MenuBar(master=self)
@@ -72,7 +100,9 @@ class MyWindow(QMainWindow):
         self.minimize_button.setGeometry(880, 10, 30, 30)
         self.minimize_button.clicked.connect(self.minimize_window)
 
-        self.maximize_button = QPushButton("+", self)
+        self.maximize_button = QPushButton(self)
+        icon = QIcon('./resources/maximize_button.png')
+        self.maximize_button.setIcon(icon)
         self.maximize_button.setGeometry(930, 10, 30, 30)
         self.maximize_button.clicked.connect(self.maximize_window)
 

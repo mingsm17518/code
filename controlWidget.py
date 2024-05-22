@@ -98,12 +98,12 @@ class ControlWidget(QWidget):
         # 主体采用水平布局
         self.mainLayout = QHBoxLayout()
         self.mainLayout.setSpacing(0)
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.mainLayout.setContentsMargins(0, 30, 0, 0)
 
         # 按钮列表纵向布局
         self.btnLayout = QVBoxLayout()
         self.btnLayout.setSpacing(0)
-        self.btnLayout.setContentsMargins(0, 0, 0, 0)
+        self.btnLayout.setContentsMargins(0, 30, 0, 0)
 
         # 设置布局
         self.setLayout(self.mainLayout)
