@@ -199,8 +199,8 @@ class ControlWidget(QWidget):
         # self.toggle_layout_visible = False
         # self.toggle2_layout_visible = False
 
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        self.btnLayout.addItem(spacerItem)
+        #spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        #self.btnLayout.addItem(spacerItem)
 
         # 创建设置面板
         # self.scrollArea = QScrollArea(self)

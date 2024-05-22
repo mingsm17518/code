@@ -45,17 +45,22 @@ class MyWindow(QMainWindow):
 
         # 移除窗口边框
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.central_widget = QWidget()
         # 设置标题栏可拖动
         self.draggable = True
         self.drag_position = None
 
         layout = QVBoxLayout()
+        self.central_widget.setLayout(layout)
         # layout.setSpacing(0)
         # self.btnLayout.setSpacing(0)
         # self.btnLayout.setContentsMargins(0, 0, 0, 0)
         # self.setLayout(layout)
         title_text = QLabel('时域天文观测处理新技术应用系统')
-        layout.addWidget(title_text)
+
+        title_layout = QHBoxLayout()
+        title_layout.addWidget(title_text)
+
 
         # 添加最大化和关闭按钮
         self.btnLayout = QHBoxLayout()
@@ -63,10 +68,11 @@ class MyWindow(QMainWindow):
         self.btnLayout.addWidget(self.minimize_button)
         self.btnLayout.addWidget(self.maximize_button)
         self.btnLayout.addWidget(self.close_button)
-
+        title_layout.addLayout(self.btnLayout)
+        layout.addLayout(title_layout)
         # title_layout.addLayout(self.btnLayout)
         # title_bar_widget.setLayout(title_layout)
-        layout.addLayout(self.btnLayout)
+        # layout.addLayout(self.btnLayout)
 
         # 菜单
         # self._menuBar = MenuBar(master=self)
@@ -80,7 +86,7 @@ class MyWindow(QMainWindow):
         # self.statusBar()
 
         # self.control_widget = ControlWidget(parent=self)  # 将当前窗口实例作为父级对象传递给 ControlWidget
-        # self.setCentralWidget(self.control_widget)
+        self.setCentralWidget(self.central_widget)
         # 连接控件中的自定义信号到槽函数
         # self.control_widget.close_signal.connect(self.close_window)
 
@@ -88,6 +94,7 @@ class MyWindow(QMainWindow):
         self.mainWidget = ControlWidget(self)
         # self.setWidget = setWidget()
         layout.addWidget(self.mainWidget)
+        #self.setLayout(layout)
         # self.setCentralWidget(self.mainWidget)
 
         self.header = None
