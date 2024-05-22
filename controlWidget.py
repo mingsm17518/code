@@ -1,9 +1,9 @@
 # coding:utf-8
 import numpy as np
 from astropy.io import fits
-from PySide6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QPlainTextEdit,QDialog,
+from PySide6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QPlainTextEdit,QDialog,QMenu,
                                QPushButton, QLabel, QSpacerItem, QSizePolicy, QGroupBox, QStackedWidget, QFileDialog)
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize,QPoint
 from PySide6.QtGui import QIcon, QFont
 
 from operationwidget import OperationWidget
@@ -140,11 +140,26 @@ class ControlWidget(QWidget):
                      icon1='./resources/1_unpressed_light',
                      icon2='./resources/1_pressed_light'
                      )
+        self.menu_button = SystemButton(master=self,
+                     icon1='./resources/设置.png',
+                     icon2='./resources/设置.png'
+                     )
+
 
         self.btnList = [self.btn1, self.btn2, self.btn3, self.btn4, self.btn5, self.btn6,self.btn7,self.btn8,self.btn9]
 
         for btn in self.btnList:
             self.btnLayout.addWidget(btn)
+
+
+        # 在btnLayout中添加stretch和btn10
+        self.btnLayout.addStretch(1)
+        self.btnLayout.addWidget(self.menu_button)
+        self.menu_button.clicked.connect(self.showMenu)
+
+
+
+
         # self.btnLayout.addWidget(self.btn1)
         # self.btnLayout.addWidget(self.btn2)
         # self.btnLayout.addWidget(self.btn3)
@@ -219,6 +234,7 @@ class ControlWidget(QWidget):
         self.gb9 = QGroupBox(self.settingWidget)
         self.gb9.setTitle('设置')
         self.btn9.groupbox = self.gb9
+
         # 往gb9塞入界面
         self.gb9.setObjectName('set')
 
@@ -696,3 +712,35 @@ class ControlWidget(QWidget):
         self.gb9.setVisible(True)
         self.setWidget.setVisible(True)
         # self.set_widget.show()
+
+    # 定义showMenu方法
+    def showMenu(self):
+        menu = QMenu()
+        theme_action = menu.addAction("主题")
+        panel_action = menu.addAction("面板")
+        header_action = menu.addAction("文件头")
+        settings_action = menu.addAction("设置")
+
+        # 为每个动作创建对应的槽函数
+        theme_action.triggered.connect(self.changeStyle)
+        panel_action.triggered.connect(self.panelFunction)
+        header_action.triggered.connect(self.headerFunction)
+        settings_action.triggered.connect(self.settingsFunction)
+
+        # 向右移动菜单的位置
+        btn_pos = self.mapToGlobal(self.menu_button.pos())
+        menu.move(btn_pos + QPoint(self.menu_button.width(), 0))
+
+        # 显示菜单列表
+        menu.exec_(btn_pos + QPoint(self.menu_button.width(), 0))
+
+    def changeStyle(self):
+        # 修改文本样式和背景样式
+        self.label.setStyleSheet("QLabel { color: red; font-size: 16px; background-color: lightblue; }")
+
+    def panelFunction(self):
+        pass
+    def headerFunction(self):
+        pass
+    def settingsFunction(self):
+        pass
