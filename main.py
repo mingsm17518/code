@@ -1,10 +1,11 @@
+from PySide6.QtCore import Qt, QPoint
 # coding:utf-8
 import sys
 import numpy as np
 # from astropy.io import fits
 from PySide6.QtGui import QPalette, QColor, Qt, QGuiApplication,QIcon
 from PySide6.QtWidgets import (QApplication, QMainWindow, QFileDialog, QMessageBox,QVBoxLayout,
-                               QPushButton,QLabel,QWidget,QHBoxLayout)
+                               QPushButton,QLabel,QWidget,QHBoxLayout,QFrame,QStatusBar)
 # import qdarktheme
 from astropy.io import fits
 
@@ -17,105 +18,103 @@ from headerdisplay import HeaderDisplay
 from controlWidget import ControlWidget
 from set.setwidget import setWidget
 
-
-class MyWindow(QMainWindow):
-    BORDER_WIDTH = 5
-
-    def __init__(self, filename=None):
+class BorderlessWindow(QWidget):
+    def __init__(self):
         super().__init__()
 
-        # self.setWindowTitle('时域天文观测处理新技术应用系统')
-        self.resize(1024, 760)
+        self.setWindowFlag(Qt.FramelessWindowHint)  # 设置无边框窗口
+        self.draggable = True  # 添加一个可拖动标志
         self.theme = 'light'
-        self.create_titlebar_buttons()
+        self.setGeometry(500, 50, 1024,760)
 
-        # 创建标题栏部件
-        # title_bar_widget = QWidget()
-        # title_layout = QHBoxLayout()
-        # 在标题栏上添加标题文本
+        self.top_layout_height = 60  # 顶部布局高度
+        self.createTopLayout()
+        self.createCenterLayout()
+        self.createBottomLayout()
 
-        # title_layout.addWidget(title_text)
-        #
-        #
-        #
-        # 将标题栏添加到窗口中
-        # main_layout = QVBoxLayout()
-        # main_layout.addWidget(title_bar_widget)
-        # self.setLayout(main_layout)
+        main_layout = QVBoxLayout(self)
+        main_layout.addLayout(self.top_layout)
 
-        # 移除窗口边框
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.central_widget = QWidget()
-        # 设置标题栏可拖动
-        self.draggable = True
-        self.drag_position = None
+        central_widget = QWidget(self)
+        central_widget.setLayout(self.center_layout)
+        main_layout.addWidget(central_widget)
 
-        layout = QVBoxLayout()
-        self.central_widget.setLayout(layout)
-        # layout.setSpacing(0)
-        # self.btnLayout.setSpacing(0)
-        # self.btnLayout.setContentsMargins(0, 0, 0, 0)
-        # self.setLayout(layout)
-        title_text = QLabel('时域天文观测处理新技术应用系统')
-
-        title_layout = QHBoxLayout()
-        title_layout.addWidget(title_text)
-
-
-        # 添加最大化和关闭按钮
-        self.btnLayout = QHBoxLayout()
-        self.btnLayout.addStretch(1)  # 添加弹性空间
-        self.btnLayout.addWidget(self.minimize_button)
-        self.btnLayout.addWidget(self.maximize_button)
-        self.btnLayout.addWidget(self.close_button)
-        title_layout.addLayout(self.btnLayout)
-        layout.addLayout(title_layout)
-        # title_layout.addLayout(self.btnLayout)
-        # title_bar_widget.setLayout(title_layout)
-        # layout.addLayout(self.btnLayout)
-
-        # 菜单
-        # self._menuBar = MenuBar(master=self)
-        # self.setMenuBar(self._menuBar)
-
-        # self._toolBar = ToolBar(master=self)
-        # self.addToolBar(self._toolBar)
-        # 状态栏
-        self._statusBar = StatusBar(parent=self)
-        self.setStatusBar(self._statusBar)
-        # self.statusBar()
-
-        # self.control_widget = ControlWidget(parent=self)  # 将当前窗口实例作为父级对象传递给 ControlWidget
-        self.setCentralWidget(self.central_widget)
-        # 连接控件中的自定义信号到槽函数
-        # self.control_widget.close_signal.connect(self.close_window)
-
-        # 面板
-        self.mainWidget = ControlWidget(self)
-        # self.setWidget = setWidget()
-        layout.addWidget(self.mainWidget)
-        #self.setLayout(layout)
-        # self.setCentralWidget(self.mainWidget)
+        main_layout.addWidget(self.bottom_widget)
 
         self.header = None
         self.show()
         self.init()
-        # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-    def create_titlebar_buttons(self):
-        self.minimize_button = QPushButton("-", self)
-        self.minimize_button.setGeometry(880, 10, 30, 30)
-        self.minimize_button.clicked.connect(self.minimize_window)
+    # def show_menu(self):
+    #     # 计算菜单的位置
+    #     menu_pos = self.menu_button.mapToGlobal(QPoint(0, self.menu_button.height()))
+    #     # 在计算出的位置显示菜单
+    #     # self.menu_widget.setGeometry(menu_pos.x(), menu_pos.y(), self.menu_widget.width(), self.menu_widget.height())
+    #     self.menu_widget.show()
 
-        self.maximize_button = QPushButton(self)
-        icon = QIcon('./resources/maximize_button.png')
-        self.maximize_button.setIcon(icon)
-        self.maximize_button.setGeometry(930, 10, 30, 30)
-        self.maximize_button.clicked.connect(self.maximize_window)
+    def createTopLayout(self):
+        self.top_layout = QHBoxLayout()
 
-        self.close_button = QPushButton("×", self)
-        self.close_button.setGeometry(980, 10, 30, 30)
-        self.close_button.clicked.connect(self.close_window)
+        # 添加图标
+        icon_label = QLabel()
+        # 设置图标
+        self.top_layout.addWidget(icon_label)
+
+        # 添加标题
+        title_label = QLabel("时域天文观测处理新技术应用系统")
+        title_label.setStyleSheet("text-align: center;")
+        self.top_layout.addWidget(title_label)
+
+        # 添加最小化按钮
+        minimize_button = QPushButton("-")
+        minimize_button.setFixedSize(30, 30)  # 设置最小化按钮的固定大小
+        self.top_layout.addWidget(minimize_button)
+        minimize_button.clicked.connect(self.minimize_window)
+
+        # 添加最大化按钮
+        maximize_button = QPushButton(self,icon = QIcon('./resources/maximize_button.png'))
+        maximize_button.setFixedSize(30, 30)  # 设置最大化按钮的固定大小
+        self.top_layout.addWidget(maximize_button)
+        maximize_button.clicked.connect(self.maximize_window)
+
+        # 添加关闭按钮
+        close_button = QPushButton("×")
+        close_button.setFixedSize(30, 30)  # 设置关闭按钮的固定大小
+        self.top_layout.addWidget(close_button)
+        close_button.clicked.connect(self.close_window)
+
+    def createCenterLayout(self):
+        self.center_layout = QVBoxLayout()
+        # 面板
+        # self.mainWidget = ControlWidget(self)
+        # self.center_layout.addWidget(self.mainWidget)
+
+    def createBottomLayout(self):
+        self.bottom_layout = QHBoxLayout()
+
+        # 创建状态栏并添加到布局的底部
+        self.statusBar = QStatusBar()
+        self.statusBar.showMessage('Ready')
+        self.bottom_layout.addWidget(self.statusBar)
+        self.statusBar.setStyleSheet("background-color: lightgray;")
+
+        # 创建状态栏
+        # self._statusBar = StatusBar(parent=self)
+        # self.bottom_layout.addWidget(self._statusBar)  # 将状态栏添加到底部布局中
+
+        # 添加文本显示
+        status_label = QLabel("状态栏")
+        self.bottom_layout.addWidget(status_label)
+
+        # 添加进度条
+        progress_bar = QFrame()  # 自定义进度条样式
+        self.bottom_layout.addWidget(progress_bar)
+        self.bottom_layout.setSpacing(5)
+
+        # 创建底部布局的容器，并设置固定高度
+        self.bottom_widget = QWidget(self)
+        self.bottom_widget.setLayout(self.bottom_layout)
+        self.bottom_widget.setFixedHeight(self.top_layout_height // 2)
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.MouseButton.LeftButton and self.draggable:
@@ -143,14 +142,9 @@ class MyWindow(QMainWindow):
     def close_window(self):
         self.close()
 
-    def close_window(self):
-        # 执行需要在关闭按钮点击时执行的操作
-        reply = QMessageBox.question(self, "退出", "退出系统?", QMessageBox.Yes | QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            self.close()
-
     def init(self):
-        self.mainWidget.init()
+        pass
+        # self.mainWidget.init()
 
     def open(self, path, hdu=None):
         with open(path, 'rb') as input_file:
@@ -163,77 +157,9 @@ class MyWindow(QMainWindow):
 
         return hduList, hdu, image
 
-    def openDialog(self):
-        pass
-    #     filename = QFileDialog.getOpenFileName(self, '打开文件', '.', filter='fits文件(*.fits *.fit *.gz);;所有文件(*.*)')
-    #     if filename[0]:
-    #         hduList, hdu, image = self.open(filename[0])
-    #
-    #         fitsWidget = FitsWidget(parent=self.mainWidget.display, action=self.menuBar().fitsMenu.actions()[0],
-    #                                 hduList=hduList, hdu=hdu, image=image, statusBar=self.statusBar())
-    #         self.mainWidget.addFitsTab(fitsWidget=fitsWidget, name=filename[0].split('/')[-1])
 
-    def openConfig(self):
-        config_win = ConfigDlg()
-        config_win.show()
-        config_win.exec()
-
-    def showHeader(self):
-        if not self.header:
-            return
-        headerWindow = HeaderDisplay(self.header)
-        headerWindow.show()
-        headerWindow.exec()
-
-    def setTheme(self):
-        if self.theme == 'light':
-            self.theme = 'dark'
-        else:
-            self.theme = 'light'
-
-        # qdarktheme.setup_theme(self.theme)
-        self.mainWidget.setTheme(self.theme)
-        self.setStyleSheet("QWidget:{background: transparent}")
-
-    def exitSys(self):
-        reply = QMessageBox.question(self, "退出", "退出系统?", QMessageBox.Yes | QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            self.close()
-
-# todo 已经更改（app=None） -> (self, app=None)
-    def get_darkModePalette(self, app=None):
-        darkPalette = app.palette()
-        darkPalette.setColor(QPalette.Window, QColor(53, 53, 53))
-        darkPalette.setColor(QPalette.WindowText, Qt.white)
-        darkPalette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(127, 127, 127))
-        darkPalette.setColor(QPalette.Base, QColor(42, 42, 42))
-        darkPalette.setColor(QPalette.AlternateBase, QColor(66, 66, 66))
-        darkPalette.setColor(QPalette.ToolTipBase, Qt.white)
-        darkPalette.setColor(QPalette.ToolTipText, Qt.white)
-        darkPalette.setColor(QPalette.Text, Qt.white)
-        darkPalette.setColor(QPalette.Disabled, QPalette.Text, QColor(127, 127, 127))
-        darkPalette.setColor(QPalette.Dark, QColor(35, 35, 35))
-        darkPalette.setColor(QPalette.Shadow, QColor(20, 20, 20))
-        darkPalette.setColor(QPalette.Button, QColor(53, 53, 53))
-        darkPalette.setColor(QPalette.ButtonText, Qt.white)
-        darkPalette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(127, 127, 127))
-        darkPalette.setColor(QPalette.BrightText, Qt.red)
-        darkPalette.setColor(QPalette.Link, QColor(42, 130, 218))
-        darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        darkPalette.setColor(QPalette.Disabled, QPalette.Highlight, QColor(80, 80, 80))
-        darkPalette.setColor(QPalette.HighlightedText, Qt.white)
-        darkPalette.setColor(QPalette.Disabled, QPalette.HighlightedText, QColor(127, 127, 127), )
-
-        return darkPalette
-
-    # 处理子控件信号
-    # 状态栏
-    def setStatusInfo(self, text):
-        self._statusBar.setInfo(text)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication([])
-    # qdarktheme.setup_theme('light')
-    window = MyWindow()
-    sys.exit(app.exec())
+    window = BorderlessWindow()
+    window.show()
+    app.exec()

@@ -140,10 +140,7 @@ class ControlWidget(QWidget):
                      icon1='./resources/1_unpressed_light',
                      icon2='./resources/1_pressed_light'
                      )
-        self.menu_button = SystemButton(master=self,
-                     icon1='./resources/设置.png',
-                     icon2='./resources/设置.png'
-                     )
+        self.menu_button = QPushButton(self,icon = QIcon('./resources/设置.png'))
 
 
         self.btnList = [self.btn1, self.btn2, self.btn3, self.btn4, self.btn5, self.btn6,self.btn7,self.btn8,self.btn9]
