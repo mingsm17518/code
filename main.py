@@ -21,16 +21,17 @@ from set.setwidget import setWidget
 class BorderlessWindow(QWidget):
     def __init__(self):
         super().__init__()
-
+        self.statusBar = None
         self.setWindowFlag(Qt.FramelessWindowHint)  # 设置无边框窗口
         self.draggable = True  # 添加一个可拖动标志
         self.theme = 'light'
-        self.setGeometry(500, 50, 1024,760)
+        self.setGeometry(50, 10, 1024,760)
 
-        self.top_layout_height = 60  # 顶部布局高度
+        self.top_layout_height = 30  # 顶部布局高度
         self.createTopLayout()
-        self.createCenterLayout()
         self.createBottomLayout()
+        self.createCenterLayout()
+        self.bottom_layout_height = 30
 
         main_layout = QVBoxLayout(self)
         main_layout.addLayout(self.top_layout)
@@ -45,12 +46,8 @@ class BorderlessWindow(QWidget):
         self.show()
         self.init()
 
-    # def show_menu(self):
-    #     # 计算菜单的位置
-    #     menu_pos = self.menu_button.mapToGlobal(QPoint(0, self.menu_button.height()))
-    #     # 在计算出的位置显示菜单
-    #     # self.menu_widget.setGeometry(menu_pos.x(), menu_pos.y(), self.menu_widget.width(), self.menu_widget.height())
-    #     self.menu_widget.show()
+    def setStatusInfo(self, text):
+        self._statusBar.setInfo(text)
 
     def createTopLayout(self):
         self.top_layout = QHBoxLayout()
@@ -59,6 +56,12 @@ class BorderlessWindow(QWidget):
         icon_label = QLabel()
         # 设置图标
         self.top_layout.addWidget(icon_label)
+
+        # # 添加图标
+        # icon_label = QLabel()
+        # icon_pixmap = QPixmap('./resources/maximize_button.png')
+        # icon_label.setPixmap(icon_pixmap)
+        # self.top_layout.addWidget(icon_label)
 
         # 添加标题
         title_label = QLabel("时域天文观测处理新技术应用系统")
@@ -86,14 +89,14 @@ class BorderlessWindow(QWidget):
     def createCenterLayout(self):
         self.center_layout = QVBoxLayout()
         # 面板
-        # self.mainWidget = ControlWidget(self)
-        # self.center_layout.addWidget(self.mainWidget)
+        self.mainWidget = ControlWidget(self)
+        self.center_layout.addWidget(self.mainWidget)
 
     def createBottomLayout(self):
         self.bottom_layout = QHBoxLayout()
 
         # 创建状态栏并添加到布局的底部
-        self.statusBar = QStatusBar()
+        self.statusBar = StatusBar()
         self.statusBar.showMessage('Ready')
         self.bottom_layout.addWidget(self.statusBar)
         self.statusBar.setStyleSheet("background-color: lightgray;")
@@ -114,7 +117,6 @@ class BorderlessWindow(QWidget):
         # 创建底部布局的容器，并设置固定高度
         self.bottom_widget = QWidget(self)
         self.bottom_widget.setLayout(self.bottom_layout)
-        self.bottom_widget.setFixedHeight(self.top_layout_height // 2)
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.MouseButton.LeftButton and self.draggable:
